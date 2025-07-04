@@ -1,0 +1,166 @@
+-- Create the database
+
+CREATE DATABASE StudentDb;
+
+
+
+-- Create students table
+
+CREATE TABLE students (
+  student_id SERIAL PRIMARY KEY,
+  name VARCHAR(50) NOT NULL
+);
+
+
+
+-- Insert student names
+
+INSERT INTO students(name) VALUES 
+('Pratik'), 
+('Omprakash'), 
+('Rahul'), 
+('Jay');
+
+
+
+-- Create marks table
+
+CREATE TABLE marks (
+  mark_id SERIAL PRIMARY KEY,
+  student_id INT REFERENCES students(student_id),
+  subject VARCHAR(50),
+  score INT
+);
+
+
+
+-- Insert marks for each student in different subjects
+
+INSERT INTO marks(student_id, subject, score)
+ VALUES
+(1, 'Science', 85),
+
+(1, 'English', 78),
+
+(2, 'Science', 70),
+
+(2, 'English', 75),
+
+(3, 'Science', 90),
+
+(3, 'English', 88),
+
+(4, 'Science', 60),
+
+(4, 'English', 65);
+
+
+
+-- Select all rows from students
+
+SELECT * FROM students;
+
+
+
+-- Select all rows from marks
+
+SELECT * FROM marks;
+
+
+
+-- INNER JOIN:
+
+SELECT s.name, m.subject, m.score
+
+FROM students AS s
+
+JOIN marks AS m ON s.student_id = m.student_id;
+
+
+
+-- LEFT JOIN: 
+
+SELECT s.name, m.subject, m.score
+
+FROM students AS s
+
+LEFT JOIN marks AS m ON s.student_id = m.student_id;
+
+
+
+-- WHERE: Find students who scored more than 80
+
+SELECT name, m.subject, m.score
+
+FROM students AS s
+
+JOIN marks AS m ON s.student_id = m.student_id
+WHERE m.score > 80;
+
+
+
+-- WHERE: 
+
+SELECT s.name, m.score
+
+FROM students AS s
+
+JOIN marks AS m ON s.student_id = m.student_id
+WHERE m.subject = 'Science';
+
+
+
+-- WHERE with LIKE: Students whose name contains 'a'
+
+SELECT * FROM students WHERE name LIKE '%a%';
+
+
+
+-- ILIKE : case sensitive off
+
+SELECT * FROM students WHERE name ILIKE '_a%';
+
+
+
+-- ORDER BY: List students asc
+
+SELECT * FROM students ORDER BY name ASC;
+
+
+
+-- GROUP BY: Total marks by subject
+
+SELECT subject, SUM(score) AS total_marks
+
+FROM marks
+
+GROUP BY subject;
+
+
+-- Get students who appeared in 'English'
+
+SELECT * FROM students
+
+WHERE student_id IN (
+  SELECT student_id FROM marks WHERE subject = 'English'
+);
+
+
+
+-- Update: Change a student's name
+
+UPDATE students SET name = 'Alice Smith'
+ WHERE student_id = 4;
+
+
+
+-- Delete: Remove a specific marks entry
+
+DELETE FROM marks WHERE mark_id = 8;
+
+
+
+-- Drop tables (only if needed)
+-- 
+DROP TABLE marks;
+DROP TABLE students;
